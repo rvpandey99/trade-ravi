@@ -1,0 +1,27 @@
+{
+  "name": "trade-ravi",
+  "version": "1.0.0",
+  "description": "This is an simulation of real world trading system(Platform). This is just for technology demonstration and is a part of an assessment.",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.11",
+    "normalize-port": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rvpandey99/trade-ravi.git"
+  },
+  "author": "Ravi Prakash Pandey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rvpandey99/trade-ravi/issues"
+  },
+  "homepage": "https://github.com/rvpandey99/trade-ravi#readme"
+}
