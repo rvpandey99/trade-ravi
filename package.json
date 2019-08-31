@@ -4,9 +4,11 @@
   "description": "This is an simulation of real world trading system(Platform). This is just for technology demonstration and is a part of an assessment.",
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "@hapi/joi": "^15.1.1",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.11",
     "normalize-port": "^1.0.0"
   },

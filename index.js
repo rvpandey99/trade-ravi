@@ -6,14 +6,16 @@ const bodyParser = require('body-parser');
 require('dotenv/config');
 const app = express();
 
-//middlewares
+//global middlewares
 app.use(bodyParser.json());
 
 //import models
-const User = require('./models/user')
 
 //import routes
+const register = require('./routes/auth');
 
+//use route specific middlewares
+app.use('/',register);
 
 
 //connect to mongodb
@@ -25,44 +27,18 @@ mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true }, (err)=>{
         console.log(err);
     }
 });
-
-
 //create routes
-app.get('/', async (req,res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    }catch{
-        res.json({message:err});
-    }
-})
-
-app.post('/',(req,res)=>{
-    const user = new User({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName
-    });
-    user.save().then(data => {
-        res.send(data).status(200);
-    }).catch(err => {
-        console.log(err);
-    })
-})
-
-
 
 //resolve the port
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3003');
 app.set('port', port);
 
 //start the server
 app.listen(port, (err) => {
-    if (err !== undefined) {
+    if (err) {
         console.log(err);
     }
     else {
         console.log(`server is listening on port ${port}`);
     }
 });
-
-
