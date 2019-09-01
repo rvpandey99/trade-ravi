@@ -13,9 +13,11 @@ app.use(bodyParser.json());
 
 //import routes
 const register = require('./routes/auth');
+const protected = require('./routes/protected')
 
 //use route specific middlewares
 app.use('/',register);
+app.use('/', protected);
 
 
 //connect to mongodb
