@@ -32,7 +32,7 @@ mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true }, (err)=>{
 //create routes
 
 //resolve the port
-var port = normalizePort(process.env.PORT || '3003');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 //start the server
