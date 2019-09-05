@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const registerSchema = Joi.object().keys({
     userId: Joi.string().alphanum().min(3).max(30).required(),
     userName: Joi.string().min(3).max(30).required(),
-    email: Joi.string().email({ minDomainSegments: 1 }).required(),
+    email: Joi.string().email().required(),
     password: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/).required()
 });
 

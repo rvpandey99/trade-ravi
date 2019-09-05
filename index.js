@@ -3,10 +3,12 @@ const express = require('express');
 const normalizePort = require('normalize-port');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+var cors = require('cors')
 require('dotenv/config');
 const app = express();
 
 //global middlewares
+app.use(cors());
 app.use(bodyParser.json());
 
 //import models
