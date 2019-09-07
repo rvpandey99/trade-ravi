@@ -54,10 +54,10 @@ router.post('/login', async (req,res)=>{
     if (error) return res.status(400).send(error.details[0].message);
     
     const user = await User.findOne({userId : value.userId}) || await User.findOne({email : value.userId});
-    if (!user) return res.status(400).send('User details are wrong.');
+    if (!user) return res.status(501).send('User details are wrong.');
 
     const verified = await bcrypt.compare(value.password, user.password);
-    if (!verified) return res.status(400).send('Password is incorrect.');
+    if (!verified) return res.status(501).send('Password is incorrect.');
 
     const payload = {
         userId: user.userId,
