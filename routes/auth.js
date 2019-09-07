@@ -24,10 +24,10 @@ router.post('/register',async (req,res)=>{
     let {error, value} = Joi.validate(data, registerSchema);
     if (error) return res.status(400).send(error.details[0].message);
     
-    const userIdExist = await User.findOne({userId : value.userId});
+    const userIdExist = await User.findOne({userId : value.userId.toLowerCase()});
     if (userIdExist) return res.status(400).send('User ID already exist. Please try again with different User Id.')
     
-    const emailExist = await User.findOne({email : value.email});
+    const emailExist = await User.findOne({email : value.email.toLowerCase()});
     if (emailExist) return res.status(400).send('Email ID already registered. Please try Log in.')
 
     // password hashing
