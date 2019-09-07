@@ -23,15 +23,16 @@ router.post('/register',async (req,res)=>{
     const data = req.body;
     let {error, value} = Joi.validate(data, registerSchema);
     if (error) return res.status(400).send(error.details[0].message);
-    // password hashing
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(value.password,salt);
     
     const userIdExist = await User.findOne({userId : value.userId});
     if (userIdExist) return res.status(400).send('User ID already exist. Please try again with different User Id.')
     
     const emailExist = await User.findOne({email : value.email});
     if (emailExist) return res.status(400).send('Email ID already registered. Please try Log in.')
+
+    // password hashing
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(value.password,salt);
     // register the user if validation passes
     const user = new User({
         userId: value.userId,
@@ -53,7 +54,7 @@ router.post('/login', async (req,res)=>{
     let {error, value} = Joi.validate(data, loginSchema);
     if (error) return res.status(400).send(error.details[0].message);
     
-    const user = await User.findOne({userId : value.userId}) || await User.findOne({email : value.userId});
+    const user = await User.findOne({userId : value.userId.toLowerCase()}) || await User.findOne({email : value.userId.toLowerCase()});
     if (!user) return res.status(501).send('User details are wrong.');
 
     const verified = await bcrypt.compare(value.password, user.password);
