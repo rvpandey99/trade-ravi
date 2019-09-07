@@ -59,13 +59,13 @@ router.post('/login', async (req,res)=>{
     const verified = await bcrypt.compare(value.password, user.password);
     if (!verified) return res.status(501).send('Password is incorrect.');
 
+    // assign jwt
+    const token = jwt.sign({userId: user.userName}, process.env.SECRET, {expiresIn:'1h'});
     const payload = {
         userId: user.userId,
-        userName: user.userName
+        userName: user.userName,
+        token: token
     }
-
-    // assign jwt
-    const token = jwt.sign({userId: user.userName}, process.env.SECRET)
     res.status(200).header("authToken",token).json(payload);
 });
 
