@@ -10,12 +10,12 @@ const registerSchema = Joi.object().keys({
     userId: Joi.string().alphanum().min(3).max(30).required(),
     userName: Joi.string().min(3).max(30).required(),
     email: Joi.string().email().required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/).required()
+    password: Joi.string().regex(/^(?=.*[@#$%&^*()])[A-Za-z\d@#$%&^*()]{8,}$/).required()
 });
 
 const loginSchema = Joi.object().keys({
     userId: Joi.string().required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{6,30}$/).required()
+    password: Joi.string().regex(/^(?=.*[@#$%&^*()])[A-Za-z\d@#$%&^*()]{8,}$/).required()
 });
 
 //route
