@@ -15,7 +15,7 @@ const registerSchema = Joi.object().keys({
 
 const loginSchema = Joi.object().keys({
     userId: Joi.string().required(),
-    password: Joi.string().regex(/^(?=.*[@#$%&^*()])[A-Za-z\d@#$%&^*()]{8,}$/).required()
+    password: Joi.string().required()
 });
 
 //route
