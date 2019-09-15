@@ -28,7 +28,7 @@ router.post('/register',async (req,res)=>{
     if (userIdExist) return res.status(400).send('User ID already exist. Please try again with different User Id.')
     
     const emailExist = await User.findOne({email : value.email.toLowerCase()});
-    if (emailExist) return res.status(400).send('Email ID already registered. Please try Log in.')
+    if (emailExist) return res.status(400).send('Email already used')
 
     // password hashing
     const salt = await bcrypt.genSalt(10);
