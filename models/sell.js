@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const sellSchema = mongoose.Schema({
     orderId: {
         type: Number,
-        required: true
+        default: Date.now()
     },
     ticker: {
         type: String,
@@ -10,7 +10,7 @@ const sellSchema = mongoose.Schema({
         uppercase: true
     },
     aprice: {
-        type: 400,
+        type: Number,
         required: true
     },
     qty: {

@@ -61,7 +61,7 @@ router.post('/login', async (req,res)=>{
     if (!verified) return res.status(501).send('Password is incorrect.');
 
     // assign jwt
-    const token = jwt.sign({userId: user.userName}, process.env.SECRET, {expiresIn:'1h'});
+    const token = jwt.sign({userId: user.userId, userName: user.userName}, process.env.SECRET, {expiresIn:'1h'});
     const payload = {
         userId: user.userId,
         userName: user.userName,

@@ -10,7 +10,7 @@ const tradeSchema = mongoose.Schema({
         uppercase: true
     },
     aprice: {
-        type: 400,
+        type: Number,
         required: true
     },
     qty: {
