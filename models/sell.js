@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const sellSchema = mongoose.Schema({
     orderId: {
         type: Number,
-        default: Date.now()
+        default: Date.now(),
+        unique: true
     },
     ticker: {
         type: String,
