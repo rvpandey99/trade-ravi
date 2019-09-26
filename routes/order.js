@@ -34,7 +34,19 @@ router.post('/buy', verify, async (req,res) => {
     }catch(error){
         console.log(error);
     }
-
+    try{
+        const sameOrder = await Sell.find({userId: user.userId, ticker: value.ticker},(error,order) => {
+            return {error,order};
+        }).sort({orderId:-1}).limit(1);
+        if (sameOrder.length > 0) {
+            if ((Date.now() - sameOrder[0].orderId) < 86400000) {
+                return res.status(400).send(`You have an existing order for today with Order ID: ${sameOrder[0].orderId}.You can not order twice for same stock in a day. Please try again tomorrow.`);
+            }
+            // console.log(sameOrder[0],(Date.now() - sameOrder[0].orderId));
+        }
+    }catch(error){
+        console.log(error);
+    }
     const tickerExist = await Stock.findOne({ticker : value.ticker.toUpperCase()});
     if (!tickerExist) return res.status(400).send('Stock ticker does not exist. Please try again with existing Stock.');
 
@@ -84,6 +96,19 @@ router.post('/sell', verify, async (req,res) => {
         console.log(error);
     }
 
+    try{
+        const sameOrder = await Buy.find({userId: user.userId, ticker: value.ticker},(error,order) => {
+            return {error,order};
+        }).sort({orderId:-1}).limit(1);
+        if (sameOrder.length > 0) {
+            if ((Date.now() - sameOrder[0].orderId) < 86400000) {
+                return res.status(400).send(`You have an existing order for today with Order ID: ${sameOrder[0].orderId}.You can not order twice for same stock in a day. Please try again tomorrow.`);
+            }
+            // console.log(sameOrder[0],(Date.now() - sameOrder[0].orderId));
+        }
+    }catch(error){
+        console.log(error);
+    }
     const tickerExist = await Stock.findOne({ticker : value.ticker.toUpperCase()});
     if (!tickerExist) return res.status(400).send('Stock ticker does not exist. Please try again with existing Stock.');
 
