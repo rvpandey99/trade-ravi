@@ -34,7 +34,7 @@ router.post('/buy', verify, async (req,res) => {
     }catch(error){
         console.log(error);
     }
-    
+
     const tickerExist = await Stock.findOne({ticker : value.ticker.toUpperCase()});
     if (!tickerExist) return res.status(400).send('Stock ticker does not exist. Please try again with existing Stock.');
 
@@ -83,10 +83,10 @@ router.post('/sell', verify, async (req,res) => {
     }catch(error){
         console.log(error);
     }
-        
+
     const tickerExist = await Stock.findOne({ticker : value.ticker.toUpperCase()});
     if (!tickerExist) return res.status(400).send('Stock ticker does not exist. Please try again with existing Stock.');
-    
+
     const sell = new Sell({
         userId: user.userId,
         ticker: value.ticker,
@@ -113,15 +113,23 @@ router.get('/orders', verify, async (req,res) => {
         orders.forEach((order)=>{
             ordersMap[order.orderId] = order;
         });
-    });
-    await Sell.find({userId: user.userId}, (error, orders)=>{
-        if(error){
-            return res.send(error).status(400);
-        }
-        orders.forEach((order)=>{
-            ordersMap[order.orderId] = order;
+        await Sell.find({userId: user.userId}, (error, orders)=>{
+            if(error){
+                return res.send(error).status(400);
+            }
+            orders.forEach((order)=>{
+                ordersMap[order.orderId] = order;
+            });
         });
     });
+    // await Sell.find({userId: user.userId}, (error, orders)=>{
+    //     if(error){
+    //         return res.send(error).status(400);
+    //     }
+    //     orders.forEach((order)=>{
+    //         ordersMap[order.orderId] = order;
+    //     });
+    // });
     return res.send(ordersMap).status(200);
 });
 
