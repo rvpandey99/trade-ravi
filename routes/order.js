@@ -106,30 +106,31 @@ router.post('/sell', verify, async (req,res) => {
 router.get('/orders', verify, async (req,res) => {
     const user = req.user;
     const ordersMap = {};
-    await Buy.find({userId: user.userId}, (error, orders)=>{
+    const buyOrders = await Buy.find({userId: user.userId}, (error, orders)=>{
         if(error){
             return res.send(error).status(400);
         }
-        orders.forEach((order)=>{
-            ordersMap[order.orderId] = order;
-        });
-        await Sell.find({userId: user.userId}, (error, orders)=>{
-            if(error){
-                return res.send(error).status(400);
-            }
-            orders.forEach((order)=>{
-                ordersMap[order.orderId] = order;
-            });
-        });
+        return orders;
+        // orders.forEach((order)=>{
+        //     ordersMap[order.orderId] = order;
+        // });
     });
-    // await Sell.find({userId: user.userId}, (error, orders)=>{
-    //     if(error){
-    //         return res.send(error).status(400);
-    //     }
-    //     orders.forEach((order)=>{
-    //         ordersMap[order.orderId] = order;
-    //     });
-    // });
+    const sellOrders = await Sell.find({userId: user.userId}, (error, orders)=>{
+        if(error){
+            return res.send(error).status(400);
+        }
+        return orders;
+        // orders.forEach((order)=>{
+        //     ordersMap[order.orderId] = order;
+        // });
+    });
+    buyOrders.forEach((order)=>{
+        ordersMap[order.orderId] = order;
+    });
+    sellOrders.forEach((order)=>{
+        ordersMap[order.orderId] = order;
+    });
+    // console.log(sellOrders);
     return res.send(ordersMap).status(200);
 });
 
