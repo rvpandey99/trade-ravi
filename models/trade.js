@@ -2,14 +2,15 @@ const mongoose = require('mongoose');
 const tradeSchema = mongoose.Schema({
     orderId: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     ticker: {
         type: String,
         required: true,
         uppercase: true
     },
-    aprice: {
+    price: {
         type: Number,
         required: true
     },
