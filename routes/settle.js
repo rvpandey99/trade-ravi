@@ -44,6 +44,14 @@ async function settleTrade() {
         sellMap[order.ticker].push(order);
     });
     // console.log(sellMap);
+    for(let lol in sellMap){
+        // console.log(lol,sellMap[lol]);
+        sellMap[lol].forEach((sale)=>{
+            buyMap[sale.ticker].forEach((buying)=>{
+                if (sale.aprice == buying.bprice) console.log(sale, buying);
+            });
+        });
+    }
 }
 
 module.exports = settleTrade;
