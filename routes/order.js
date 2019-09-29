@@ -4,7 +4,9 @@ const verify = require('./verify');
 const Stock = require('../models/stocks');
 const Buy = require('../models/buy');
 const Sell = require('../models/sell');
+const Trade = require('../models/trade');
 const Joi = require('@hapi/joi');
+const settle = require('../routes/settle');
 
 const buyJoi = Joi.object().keys({
     ticker: Joi.string().required(),
@@ -59,6 +61,11 @@ router.post('/buy', verify, async (req,res) => {
     });
     try{
         const bought = await buy.save();
+        try{
+            settle();
+        }catch(error){
+            console.log(error)
+        }
         return res.status(200).send(bought);
     }
     catch(error) {
@@ -121,6 +128,11 @@ router.post('/sell', verify, async (req,res) => {
     });
     try{
         const sold = await sell.save();
+        try{
+            settle();
+        }catch(error){
+            console.log(error)
+        }
         return res.status(200).send(sold);
     }
     catch(error) {
@@ -157,6 +169,24 @@ router.get('/orders', verify, async (req,res) => {
     });
     // console.log(sellOrders);
     return res.send(ordersMap).status(200);
+});
+
+router.get('/trades',verify, async (req,res)=>{
+    const user = req.user;
+    const tradesMap = {};
+    const trades = await Trade.find({userId: user.userId}, (error, orders)=>{
+        if(error){
+            return res.send(error).status(400);
+        }
+        return orders;
+        // orders.forEach((order)=>{
+        //     ordersMap[order.orderId] = order;
+        // });
+    });
+    trades.forEach((order)=>{
+        tradesMap[order.settleDate] = order;
+    });
+    return res.send(tradesMap).status(200);
 });
 
 module.exports = router;

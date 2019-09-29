@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const tradeSchema = mongoose.Schema({
     orderId: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
     ticker: {
         type: String,
@@ -24,7 +23,8 @@ const tradeSchema = mongoose.Schema({
     },
     settleDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        unique: true
     },
     orderDate: {
         type: Date,
