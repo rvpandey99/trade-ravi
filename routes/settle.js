@@ -134,8 +134,7 @@ async function settleTrade() {
                         __v: buying.__v };
                         buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1,lol);
                     }
-                    
-                    console.log(buyMap[sale.ticker]);
+                    //console.log(buyMap[sale.ticker]);
                 }
             });
         });
@@ -146,7 +145,14 @@ async function dbStuff(sale,buying,deal) {
     var remainSale = 0;
     var remainBuying = 0;
     var tradeqty = 0;
-    if (sale.qty >= buying.qty) {
+    if (sale.qty = buying.qty) {
+        remainSale = sale.qty - buying.qty;
+        remainBuying = 0;
+        tradeqty = buying.qty;
+        var buyStatus = "Fulfilled";
+        var sellStatus = "Fulfilled";
+    } else
+    if (sale.qty > buying.qty) {
         remainSale = sale.qty - buying.qty;
         remainBuying = 0;
         tradeqty = buying.qty;
@@ -159,8 +165,17 @@ async function dbStuff(sale,buying,deal) {
         var buyStatus = "Partially fulfilled";
         var sellStatus = "Fulfilled";
     }
-    await Buy.update({orderId:buying.orderId},{$set:{qty:remainBuying,status:buyStatus}});
-    await Sell.update({orderId:sale.orderId},{$set:{qty:remainSale,status:sellStatus}});
+    if (remainBuying == 0){
+        await Buy.update({orderId:buying.orderId},{$set:{status:buyStatus}});
+    } else {
+        await Buy.update({orderId:buying.orderId},{$set:{qty:remainSale,status:buyStatus}});
+    }
+    if (remainSale == 0){
+        await Sell.update({orderId:sale.orderId},{$set:{status:sellStatus}});
+    } else {
+        await Sell.update({orderId:sale.orderId},{$set:{qty:remainSale,status:sellStatus}});
+    }
+
     await Stock.update({ticker:buying.ticker},{$set:{marketPrice:deal}});
     const tradeBuy = new Trade({
         orderId: buying.orderId,
