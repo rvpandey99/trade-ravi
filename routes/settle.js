@@ -196,7 +196,7 @@ async function dbStuff(sale,buying,deal) {
     const tradeSell = new Trade({
          orderId: sale.orderId,
         ticker: sale.ticker,
-        price: sale.bprice,
+        price: sale.aprice,
         tradedPrice: deal,
         qty: sale.qty,
         tradedQty: tradeqty,
