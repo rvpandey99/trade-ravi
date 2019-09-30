@@ -149,7 +149,7 @@ async function dbStuff(sale,buying,deal) {
     var remainSale = 0;
     var remainBuying = 0;
     var tradeqty = 0;
-    if (sale.remainingQty = buying.remainingQty) {
+    if (sale.remainingQty === buying.remainingQty) {
         remainSale = sale.remainingQty - buying.remainingQty;
         remainBuying = 0;
         tradeqty = buying.remainingQty;
