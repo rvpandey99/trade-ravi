@@ -38,10 +38,10 @@ async function settleTrade() {
         return a.bprice - b.bprice;
     });
     buyOrders.forEach((order)=>{
-        if (order.qty > 0 || order.status !== "Fulfilled") buyMap[order.ticker].push(order);
+        if (order.remainingQty > 0 || order.status !== "Fulfilled") buyMap[order.ticker].push(order);
     });
     sellOrders.forEach((order)=>{
-        if (order.qty > 0 || order.status !== "Fulfilled") sellMap[order.ticker].push(order);
+        if (order.remainingQty > 0 || order.status !== "Fulfilled") sellMap[order.ticker].push(order);
     });
     console.log(buyMap);
     for(let i in sellMap){
@@ -53,7 +53,7 @@ async function settleTrade() {
                 let min2 = buying.bprice - ((buying.bprice * buying.limit)/100);
                 let max2 = buying.bprice + ((buying.bprice * buying.limit)/100);
                 if (min1>=min2 && min1<=max2) {
-                    console.log(min1);
+                    //console.log(min1);
                     const remainBuyQty = await dbStuff(sale,buying,min1);
                     if (remainBuyQty == 0){
                         buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1);
@@ -64,17 +64,18 @@ async function settleTrade() {
                             userId: buying.userId,
                             ticker: buying.ticker,
                             bprice: buying.bprice,
-                            qty: remainBuyQty,
+                            qty: buying.qty,
+                            remainingQty: remainBuyQty,
                             limit: buying.limit,
                             orderId: buying.orderId,
                             orderDate: buying.orderDate,
                             __v: buying.__v };
                             buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1,lol);
                     }
-                    console.log(buyMap[sale.ticker])
+                    //console.log(buyMap[sale.ticker])
                 }
                 else if (min2>=min1 && min2<=max1) {
-                    console.log(min2);
+                    //console.log(min2);
                     const remainBuyQty = await dbStuff(sale,buying,min2);
                     if (remainBuyQty == 0){
                         buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1);
@@ -85,17 +86,18 @@ async function settleTrade() {
                             userId: buying.userId,
                             ticker: buying.ticker,
                             bprice: buying.bprice,
-                            qty: remainBuyQty,
+                            qty: buying.qty,
+                            remainingQty: remainBuyQty,
                             limit: buying.limit,
                             orderId: buying.orderId,
                             orderDate: buying.orderDate,
                             __v: buying.__v };
                             buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1,lol);
                     }
-                    console.log(buyMap[sale.ticker]);
+                    //console.log(buyMap[sale.ticker]);
                 }
                 else if (max1>=min2 && max1<=max2) {
-                    console.log(max1);
+                    //console.log(max1);
                     const remainBuyQty = await dbStuff(sale,buying,max1);
                     if (remainBuyQty == 0){
                         buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1);
@@ -106,17 +108,18 @@ async function settleTrade() {
                             userId: buying.userId,
                             ticker: buying.ticker,
                             bprice: buying.bprice,
-                            qty: remainBuyQty,
+                            qty: buying.qty,
+                            remainingQty: remainBuyQty,
                             limit: buying.limit,
                             orderId: buying.orderId,
                             orderDate: buying.orderDate,
                             __v: buying.__v };
                             buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1,lol);
                     }
-                    console.log(buyMap[sale.ticker]);
+                    //console.log(buyMap[sale.ticker]);
                 }
                 else if (max2>=min1 && max2<=max1) {
-                    console.log(max2);
+                    //console.log(max2);
                     const remainBuyQty = await dbStuff(sale,buying,max2);
                     if (remainBuyQty == 0){
                         buyMap[sale.ticker].splice(buyMap[sale.ticker].indexOf(buying),1);
@@ -127,7 +130,8 @@ async function settleTrade() {
                         userId: buying.userId,
                         ticker: buying.ticker,
                         bprice: buying.bprice,
-                        qty: remainBuyQty,
+                        qty: buying.qty,
+                        remainingQty: remainBuyQty,
                         limit: buying.limit,
                         orderId: buying.orderId,
                         orderDate: buying.orderDate,
@@ -145,60 +149,60 @@ async function dbStuff(sale,buying,deal) {
     var remainSale = 0;
     var remainBuying = 0;
     var tradeqty = 0;
-    if (sale.qty = buying.qty) {
-        remainSale = sale.qty - buying.qty;
+    if (sale.remainingQty = buying.remainingQty) {
+        remainSale = sale.remainingQty - buying.remainingQty;
         remainBuying = 0;
-        tradeqty = buying.qty;
+        tradeqty = buying.remainingQty;
         var buyStatus = "Fulfilled";
         var sellStatus = "Fulfilled";
     } else
-    if (sale.qty > buying.qty) {
-        remainSale = sale.qty - buying.qty;
+    if (sale.remainingQty > buying.remainingQty) {
+        remainSale = sale.remainingQty - buying.remainingQty;
         remainBuying = 0;
-        tradeqty = buying.qty;
+        tradeqty = buying.remainingQty;
         var buyStatus = "Fulfilled";
         var sellStatus = "Partially fulfilled";
     } else {
         remainSale = 0;
-        remainBuying = buying.qty - sale.qty;
-        tradeqty = sale.qty;
+        remainBuying = buying.remainingQty - sale.remainingQty;
+        tradeqty = sale.remainingQty;
         var buyStatus = "Partially fulfilled";
         var sellStatus = "Fulfilled";
     }
-    if (remainBuying == 0){
-        await Buy.update({orderId:buying.orderId},{$set:{status:buyStatus}});
-    } else {
-        await Buy.update({orderId:buying.orderId},{$set:{qty:remainSale,status:buyStatus}});
-    }
-    if (remainSale == 0){
-        await Sell.update({orderId:sale.orderId},{$set:{status:sellStatus}});
-    } else {
-        await Sell.update({orderId:sale.orderId},{$set:{qty:remainSale,status:sellStatus}});
-    }
+    // if (remainBuying == 0){
+    //     await Buy.update({orderId:buying.orderId},{$set:{status:buyStatus}});
+    // } else {
+        await Buy.update({orderId:buying.orderId},{$set:{remainingQty:remainBuying,status:buyStatus}});
+    // }
+    // if (remainSale == 0){
+    //     await Sell.update({orderId:sale.orderId},{$set:{status:sellStatus}});
+    // } else {
+        await Sell.update({orderId:sale.orderId},{$set:{remainingQty:remainSale,status:sellStatus}});
+    // }
 
     await Stock.update({ticker:buying.ticker},{$set:{marketPrice:deal}});
     const tradeBuy = new Trade({
         orderId: buying.orderId,
         ticker: buying.ticker,
-        price: deal,
-        qty: tradeqty,
+        price: buying.bprice,
+        tradedPrice: deal,
+        qty: buying.qty,
+        tradedQty: tradeqty,
         limit: buying.limit,
-        orderDate: buying.orderDate,
         orderType: buying.orderType,
-        userId: buying.userId,
-        status: buyStatus
+        userId: buying.userId
     });
     await tradeBuy.save();
     const tradeSell = new Trade({
-        orderId: sale.orderId,
+         orderId: sale.orderId,
         ticker: sale.ticker,
-        price: deal,
-        qty: tradeqty,
+        price: sale.bprice,
+        tradedPrice: deal,
+        qty: sale.qty,
+        tradedQty: tradeqty,
         limit: sale.limit,
-        orderDate: sale.orderDate,
         orderType: sale.orderType,
-        userId: sale.userId,
-        status: sellStatus
+        userId: sale.userId
     });
     await tradeSell.save();
     return remainBuying;

@@ -57,6 +57,7 @@ router.post('/buy', verify, async (req,res) => {
         ticker: value.ticker,
         bprice: value.bprice,
         qty: value.qty,
+        remainingQty: value.qty,
         limit: value.limit
     });
     try{
@@ -124,6 +125,7 @@ router.post('/sell', verify, async (req,res) => {
         ticker: value.ticker,
         aprice: value.aprice,
         qty: value.qty,
+        remainingQty: value.qty,
         limit: value.limit
     });
     try{

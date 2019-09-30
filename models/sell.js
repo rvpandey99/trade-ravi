@@ -18,6 +18,10 @@ const sellSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    remainingQty: {
+        type: Number,
+        default: -1
+    },
     limit: {
         type: Number,
         required: true

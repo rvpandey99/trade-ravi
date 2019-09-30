@@ -13,7 +13,15 @@ const tradeSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    tradedPrice: {
+        type: Number,
+        required: true
+    },
     qty: {
+        type: Number,
+        required: true
+    },
+    tradedQty: {
         type: Number,
         required: true
     },
@@ -26,10 +34,6 @@ const tradeSchema = mongoose.Schema({
         default: Date.now,
         unique: true
     },
-    orderDate: {
-        type: Date,
-        required: true
-    },
     orderType: {
         type: String,
         required: true
@@ -37,10 +41,6 @@ const tradeSchema = mongoose.Schema({
     userId: {
         type:String,
         lowercase:true,
-        required:true
-    },
-    status: {
-        type: String,
         required:true
     }
 });
